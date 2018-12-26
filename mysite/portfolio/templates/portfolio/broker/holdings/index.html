@@ -1,0 +1,52 @@
+{% load render_table from django_tables2 %}
+{% load static %}
+<!doctype html>
+
+<html>
+<head>
+    <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'portfolio/style.css' %}"/>
+</head>
+<body>
+<h2>Web Portfolio</h2>
+
+
+<div id="header">
+    <p>Portfolio: {{ portfolio.display_name }}</p>
+    <a href="{% url 'portfolio:portfolios' %}">Kaikki portfoliot</a>
+</div>
+
+<div id="name">
+
+</div>
+
+<div id="menu">
+    <ul>
+        {% if is_lots_active%}
+        <li><a href="{% url 'portfolio:holdings' portfolio.name broker 'combined' %}">Näytä yhteenveto</a></li>
+        <li><a class="active" href="{% url 'portfolio:holdings' portfolio.name broker 'erat' %}">Näytä ostoerät</a></li>
+        {% else %}
+        <li><a class="active" href="{% url 'portfolio:holdings' portfolio.name broker 'combined' %}">Näytä
+            yhteenveto</a></li>
+        <li><a href="{% url 'portfolio:holdings' portfolio.name broker 'erat' %}">Näytä ostoerät</a></li>
+        {% endif %}
+    </ul>
+</div>
+
+<div id="name">
+</div>
+<form action="" method="post">
+    {% csrf_token %}
+    <table>
+        {{ form }}
+    </table>
+    <input type="submit" name="update" value="Päivitä"/>
+</form>
+
+Portfolio value: {{ portfolio_value }}
+<div id="name">
+    {% render_table portfolio_table %}
+</div>
+
+</body>
+</html>

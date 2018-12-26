@@ -1,4 +1,4 @@
-from model.currency import Currency
+from portfolioapp.model.currency import Currency
 
 
 class Tradable(object):
@@ -8,10 +8,10 @@ class Tradable(object):
         self._name = name
         self._isin = None
         self._ticker = None
-        self._exchange = "OMX"
         self._sector = None
         self._currency = Currency.EUR
         self._country = Tradable.DEFAULT_COUNTRY
+        self._price_divider = 1
 
     def __str__(self):
         return type(self).__name__ + ": " + self._name + " " + self._ticker
@@ -37,14 +37,6 @@ class Tradable(object):
         self._ticker = value
 
     @property
-    def exchange(self):
-        return self._exchange
-
-    @exchange.setter
-    def exchange(self, value):
-        self._exchange = value
-
-    @property
     def sector(self):
         return self._sector
 
@@ -67,6 +59,14 @@ class Tradable(object):
     @country.setter
     def country(self, value):
         self._country = value
+
+    @property
+    def price_divider(self):
+        return self._price_divider
+
+    @price_divider.setter
+    def price_divider(self, value):
+        self._price_divider = value
 
 
 class Stock(Tradable):

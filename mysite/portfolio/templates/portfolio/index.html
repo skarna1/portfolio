@@ -1,0 +1,17 @@
+
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'portfolio/style.css' %}" />
+
+<h2>Web Portfolio</h2>
+
+{% if portfolios %}
+    <ul>
+    {% for portfolio in portfolios %}
+        <li><a href="{% url 'portfolio:holdings' portfolio.name 'Kaikki' 'combined'  %}">{{ portfolio.display_name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No portfolios are available.</p>
+{% endif %}
+

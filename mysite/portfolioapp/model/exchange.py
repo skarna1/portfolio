@@ -1,4 +1,43 @@
-from model.stock import Stock, OldFund, OldStock, Option, Fund
+from portfolioapp.model.stock import Stock, OldFund, OldStock, Option, Fund
+from portfolioapp.model.constants import Constants
+
+
+class Exchange(object):
+    _instance = None
+
+
+    def __init__(self, name):
+        self._name = name
+        self._tradables = []
+        self._tradable_dict = {}
+        reader = ExchangeReader("{}etc/tunnukset.csv".format(Constants.BASEDIR))
+        reader.populate_exchange(self)
+
+
+    @staticmethod
+    def instance(name):
+        if not Exchange._instance:
+            Exchange._instance = Exchange(name)
+        return Exchange._instance
+
+    @property
+    def name(self):
+        return self._name
+
+    def add_tradable(self, tradable):
+        self._tradables.append(tradable)
+        self._tradable_dict[tradable.ticker] = tradable
+
+    def get_tradable(self, ticker):
+        if ticker in self._tradable_dict:
+            return self._tradable_dict[ticker]
+        raise Exception("Ticker {} not found from {}".format(ticker, self.name))
+
+    def print(self):
+        for tradable in self._tradables:
+            print(tradable)
+
+
 
 
 class ExchangeReader(object):
@@ -6,7 +45,7 @@ class ExchangeReader(object):
         self._filename = filename
 
     def populate_exchange(self, exchange):
-        with open(self._filename, "r", encoding="iso8859-1") as f:
+        with open(self._filename, "r", encoding="utf-8") as f:
             for line in f:
                 if line.startswith('#'):
                     continue
@@ -25,7 +64,7 @@ class ExchangeReader(object):
             tradable.sector = fields[0].strip()
             tradable.ticker = fields[2].strip()
         if length > position:
-            tradable.divider = fields[position].strip()
+            tradable.price_divider = float(fields[position].strip())
         position += 1
         if length > position:
             tradable.currency = fields[position].strip()
@@ -50,3 +89,4 @@ class ExchangeReader(object):
         if tradabletype == 'O':
             return Option(name)
         return None
+
